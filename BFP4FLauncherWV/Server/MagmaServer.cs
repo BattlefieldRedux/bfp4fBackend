@@ -56,7 +56,7 @@ namespace BFP4FLauncherWV
                     NetworkStream ns = client.GetStream();
                     byte[] data = Helper.ReadContentTCP(ns);
                     Log("[MGMA] Received " + data.Length + " bytes of data");
-                    Log("[MGMA] Recvdump:\n" + Encoding.ASCII.GetString(data));
+                    Log("[MGMA] Dump:\n" + Encoding.ASCII.GetString(data));
                     try
                     {
                         ProcessMagma(Encoding.ASCII.GetString(data), ns);
