@@ -1,10 +1,14 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net.Sockets;
 
 namespace BFP4FLauncherWV
 {
     public class PlayerInfo
     {
-        public string name;
         public string version;
         public long userId;
         public long exIp, exPort;
@@ -16,5 +20,6 @@ namespace BFP4FLauncherWV
         public bool isServer;
         public GameInfo game;
         public NetworkStream ns;
+        public Profile profile;
     }
 }

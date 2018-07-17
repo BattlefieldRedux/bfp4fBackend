@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Drawing;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BlazeLibWV;
 
@@ -170,78 +173,6 @@ namespace BFP4FLauncherWV
             if (e.InnerException != null)
                 result += " - " + e.InnerException.Message;
             Log(result);
-        }
-    }
-
-    public class Profile
-    {
-        public string name;
-        public long sessionId;
-        public static Profile Load(string filename)
-        {
-            string[] lines = File.ReadAllLines(filename);
-            Profile p = new Profile();
-            foreach (string line in lines)
-            {
-                string[] parts = line.Split('=');
-                if (parts.Length != 2) continue;
-                string what = parts[0].Trim().ToLower();
-                switch (what)
-                {
-                    case "name":
-                        p.name = parts[1].Trim();
-                        break;
-                    case "id":
-                        p.sessionId = Convert.ToInt32(parts[1].Trim());
-                        break;
-                }
-            }
-            if (p.name == null || p.sessionId == 0)
-                return null;
-            return p;
-        }
-    }
-
-    public static class Profiles
-    {
-        public static List<Profile> profiles = new List<Profile>();
-        public static void Refresh()
-        {
-            profiles = new List<Profile>();
-            if (!Directory.Exists("backend"))
-                Directory.CreateDirectory("backend");
-            if (!Directory.Exists("backend\\profiles"))
-                Directory.CreateDirectory("backend\\profiles");
-            string[] files = Directory.GetFiles("backend\\profiles\\", "*.txt");
-            foreach (string file in files)
-            {
-                Profile p = Profile.Load(file);
-                if (p != null)
-                    profiles.Add(p);
-            }
-            BlazeServer.Log("[MAIN] Loaded " + profiles.Count + " player profiles");
-        }
-
-        public static Profile Create(string name)
-        {
-            Profile p = new Profile();
-            p.name = name;
-            long id = 1000;
-            bool found = true;
-            while (found)
-            {
-                found = false;
-                foreach(Profile tmp in profiles)
-                    if (tmp.sessionId == id)
-                    {
-                        found = true;
-                        id++;
-                        break;
-                    }
-            }
-            p.sessionId = id;
-            File.WriteAllText("backend\\profiles\\" + id.ToString("X8") + "_profile.txt", "name=" + name + "\nid=" + id, Encoding.Unicode);
-            return p;
         }
     }
 }

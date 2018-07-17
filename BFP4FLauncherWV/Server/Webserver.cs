@@ -45,7 +45,7 @@ namespace BFP4FLauncherWV
             {
                 Log("[WEBS] starting...");
                 lHttp = new TcpListener(IPAddress.Parse(ProviderInfo.backendIP), 1234);
-                Log("[WEBS] bound to  " + ProviderInfo.backendIP + ":8080");
+                Log("[WEBS] bound to  " + ProviderInfo.backendIP + ":1234");
                 lHttp.Start();
                 Log("[WEBS] listening...");
                 TcpClient client;

@@ -47,7 +47,7 @@ namespace BFP4FLauncherWV
             if (pi.isServer)
             {
                 pi.game = new GameInfo();
-                pi.name = "test-server";
+                pi.profile = Profiles.Create("test-server", 1234);
             }
             Blaze.TdfStruct CINF = (Blaze.TdfStruct)input[1];
             Blaze.TdfString CVER = (Blaze.TdfString)CINF.Values[4];
@@ -111,7 +111,7 @@ namespace BFP4FLauncherWV
             List<Blaze.Tdf> TELEList = new List<Blaze.Tdf>();
             TELEList.Add(Blaze.TdfString.Create("ADRS", "127.0.0.1"));
             TELEList.Add(Blaze.TdfInteger.Create("ANON", 0));
-            TELEList.Add(Blaze.TdfString.Create("DISA", "1"));
+            TELEList.Add(Blaze.TdfString.Create("DISA", "AD,AF,AG,AI,AL,AM,AN,AO,AQ,AR,AS,AW,AX,AZ,BA,BB,BD,BF,BH,BI,BJ,BM,BN,BO,BR,BS,BT,BV,BW,BY,BZ,CC,CD,CF,CG,CI,CK,CL,CM,CN,CO,CR,CU,CV,CX,DJ,DM,DO,DZ,EC,EG,EH,ER,ET,FJ,FK,FM,FO,GA,GD,GE,GF,GG,GH,GI,GL,GM,GN,GP,GQ,GS,GT,GU,GW,GY,HM,HN,HT,ID,IL,IM,IN,IO,IQ,IR,IS,JE,JM,JO,KE,KG,KH,KI,KM,KN,KP,KR,KW,KY,KZ,LA,LB,LC,LI,LK,LR,LS,LY,MA,MC,MD,ME,MG,MH,ML,MM,MN,MO,MP,MQ,MR,MS,MU,MV,MW,MY,MZ,NA,NC,NE,NF,NG,NI,NP,NR,NU,OM,PA,PE,PF,PG,PH,PK,PM,PN,PS,PW,PY,QA,RE,RS,RW,SA,SB,SC,SD,SG,SH,SJ,SL,SM,SN,SO,SR,ST,SV,SY,SZ,TC,TD,TF,TG,TH,TJ,TK,TL,TM,TN,TO,TT,TV,TZ,UA,UG,UM,UY,UZ,VA,VC,VE,VG,VN,VU,WF,WS,YE,YT,ZM,ZW,ZZ"));
             TELEList.Add(Blaze.TdfString.Create("FILT", ""));
             TELEList.Add(Blaze.TdfInteger.Create("LOC\0", pi.loc));
             TELEList.Add(Blaze.TdfString.Create("NOOK", "US, CA, MX"));

@@ -117,30 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>builddate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="client_startup" xml:space="preserve">
-    <value>+webSiteHostName "#IP#" +battleFundsHostName "#IP#" +survey 0 +dc 1 +sessionId #SESSION# +lang en +soldierName "#PLAYER#" +multi 1 +frontendUrl "http://#IP#:1234/" +autoLogin 1 +loggedIn "true" +webBrowser 0 +magmaProtocol http +magmaHost #IP# +punkBuster 0</value>
-  </data>
-  <data name="redi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>redi.pfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="template_hosts_file" xml:space="preserve">
-    <value>#IP#    jeff.easylocaldev.com
-#IP#    battlefield.play4free.com
-#IP#    dev.easy.ea.com
-#IP#    dev2.easy.ea.com
-#IP#    dev3.easy.ea.com
-#IP#    dev4.easy.ea.com
-#IP#    playtest1.easy.ea.com
-#IP#    playtest1.easy.ea.com
-#IP#    private.battlefield.play4free.com
-#IP#    preprod.battlefield.play4free.com
-#IP#    pte.battlefield.play4free.com
-#IP#    gosredirector.ea.com
-#IP#    peach.online.ea.com
-#IP#    nexus.passport.com</value>
-  </data>
+  <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

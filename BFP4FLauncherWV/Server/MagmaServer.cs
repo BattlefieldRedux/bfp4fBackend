@@ -14,6 +14,7 @@ namespace BFP4FLauncherWV
 {
     public static class MagmaServer
     {
+        public static bool basicMode = false;
         public static readonly object _sync = new object();
         public static bool _exit;
         public static RichTextBox box = null;
@@ -56,7 +57,8 @@ namespace BFP4FLauncherWV
                     NetworkStream ns = client.GetStream();
                     byte[] data = Helper.ReadContentTCP(ns);
                     Log("[MGMA] Received " + data.Length + " bytes of data");
-                    Log("[MGMA] Dump:\n" + Encoding.ASCII.GetString(data));
+                    if(!basicMode)
+                        Log("[MGMA] Recvdump:\n" + Encoding.ASCII.GetString(data));
                     try
                     {
                         ProcessMagma(Encoding.ASCII.GetString(data), ns);
@@ -88,14 +90,75 @@ namespace BFP4FLauncherWV
                             ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<success><token>" + lines[5].Split(':')[1].Trim() + "</token></success>");
                         else
                             ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<success><token code=\"NEW_TOKEN\">" + lines[4].Split('=')[1] + "</token></success>");
-                        break;
+                        return;
                     case "/api/relationships/roster/nucleus":
                         Log("[MGMA] Sending Roster response");
                         ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<roster relationships=\"0\"/><success code=\"SUCCESS\"/>");
+                        return;
+                    case "/wv/getProfiles":
+                        Log("[MGMA] Sending Player Profiles");
+                        StringBuilder sb = new StringBuilder();
+                        Profiles.Refresh();
+                        sb.Append("<profiles>\r\n");
+                        foreach (Profile p in Profiles.profiles)
+                            sb.Append("<profile name='" + Profiles.getProfilePath(p.id) + "'>" + Convert.ToBase64String(Encoding.Unicode.GetBytes(p._raw)) + "</profile>\r\n");
+                        sb.Append("</profiles>\r\n");
+                        ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n" + sb.ToString());
                         break;
                 }
+                if (url.StartsWith("/api/nucleus/name/"))
+                {
+                    int id = Convert.ToInt32(url.Substring(18));
+                    Log("[MGMA] Sending name response for PID " + id);
+                    PlayerInfo p = null;
+                    foreach(PlayerInfo pi in BlazeServer.allClients)
+                        if (pi.userId == id)
+                        {
+                            p = pi;
+                            break;
+                        }
+                    if (p == null)
+                    {
+                        Log("[MGMA] Cant find player id!");
+                        return;
+                    }
+                    ReplyWithXML(s, "<name>" + p.profile.name + "</name>");
+                }
+                if (url.StartsWith("/api/nucleus/entitlements/"))
+                {
+                    int id = Convert.ToInt32(url.Substring(26));
+                    Log("[MGMA] Sending entitlement response for PID " + id);
+                    PlayerInfo p = null;
+                    foreach (PlayerInfo pi in BlazeServer.allClients)
+                        if (pi.userId == id)
+                        {
+                            p = pi;
+                            break;
+                        }
+                    if (p == null)
+                    {
+                        Log("[MGMA] Cant find player id!");
+                        return;
+                    }
+                    string response = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><entitlements count=\"18\">";
+                    string[] ids = "3001 3005 2023 3004 3024 2017 3013 3003 2004 3012 3018 2021 2054 3008 3006 3027 2005 2168".Split(' ');
+                    int i = 1;
+                    foreach (var entitlement in ids)
+                    {
+                        response += "<entitlement><entitlementId>" 
+                                 + Convert.ToString(i) 
+                                 + "</entitlementId><entitlementTag>" 
+                                 + entitlement 
+                                 + "-UNLM-</entitlementTag><useCount>0</useCount><grantDate>" 
+                                 + DateTime.UtcNow.ToString("MMM-dd-yyyy HH:mm:ss UTC") 
+                                 + "</grantDate><terminationDate></terminationDate><status>ACTIVE</status></entitlement>";
+                        i++;
+                    }
+                    response += "</entitlements>";
+                    ReplyWithXML(s, response);
+                }
             }
-            if (cmd == "POST")
+            if (cmd == "POST" && !basicMode)
             {
                 int pos = data.IndexOf("\r\n\r\n");
                 if (pos != -1)
@@ -114,7 +177,10 @@ namespace BFP4FLauncherWV
             sb.AppendLine("Connection: Keep-Alive");
             sb.AppendLine();
             sb.Append(c);
-            Log("[MGMA] Sending: \n" + sb.ToString());
+            if (!basicMode)
+            {
+                Log("[MGMA] Sending: \n" + sb.ToString());
+            }
             byte[] buf = Encoding.ASCII.GetBytes(sb.ToString());
             s.Write(buf, 0, buf.Length);
         }
