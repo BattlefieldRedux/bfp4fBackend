@@ -1,6 +1,0 @@
-C:\Users\syn\Downloads\BFP4FToolsWV-master\BFP4FToolsWV-master\BlazeLibWV\bin\Release\BlazeLibWV.dll
-C:\Users\syn\Downloads\BFP4FToolsWV-master\BFP4FToolsWV-master\BlazeLibWV\bin\Release\BlazeLibWV.pdb
-C:\Users\syn\Downloads\BFP4FToolsWV-master\BFP4FToolsWV-master\BlazeLibWV\obj\Release\BlazeLibWV.csprojAssemblyReference.cache
-C:\Users\syn\Downloads\BFP4FToolsWV-master\BFP4FToolsWV-master\BlazeLibWV\obj\Release\BlazeLibWV.csproj.CoreCompileInputs.cache
-C:\Users\syn\Downloads\BFP4FToolsWV-master\BFP4FToolsWV-master\BlazeLibWV\obj\Release\BlazeLibWV.dll
-C:\Users\syn\Downloads\BFP4FToolsWV-master\BFP4FToolsWV-master\BlazeLibWV\obj\Release\BlazeLibWV.pdb
