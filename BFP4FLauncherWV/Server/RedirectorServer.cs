@@ -27,8 +27,6 @@ namespace BFP4FLauncherWV
         public static void Start()
         {
             SetExit(false);
-            Log("--==Blaze Backend by Warranty Voider==--");
-            Log("");
             Log("Starting Redirector...");
             new Thread(tRedirectorMain).Start();
             for (int i = 0; i < 50; i++)
@@ -51,62 +49,62 @@ namespace BFP4FLauncherWV
             X509Certificate2 cert = null;
             try
             {
-                Log("[REDI] Redirector starting...");
+                Log("[Proxy] Redirector starting...");
                 lRedirector = new TcpListener(IPAddress.Parse(ProviderInfo.backendIP), 42127);
-                Log("[REDI] Redirector bound to  " + ProviderInfo.backendIP + ":42127");
+                Log("[Proxy] Redirector bound to  " + ProviderInfo.backendIP + ":42127");
                 lRedirector.Start();
                 if (useSSL)
                 {
-                    Log("[REDI] Loading Cert...");
+                    Log("[Proxy] Loading Cert...");
                     cert = new X509Certificate2(BFP4FLauncherWV.Resources.Resource1.redi, "123456");
                 }
-                Log("[REDI] Redirector listening...");
+                Log("[Proxy] Redirector listening...");
                 TcpClient client;
                 while (!GetExit())
                 {
                     client = lRedirector.AcceptTcpClient();
-                    Log("[REDI] Client connected");
+                    Log("[Proxy] Client connected");
                     if (useSSL)
                     {
                         SslStream sslStream = new SslStream(client.GetStream(), false);
-                        Log("[REDI] Authenticating...");
+                        Log("[Proxy] Authenticating...");
                         sslStream.AuthenticateAsServer(cert, false, SslProtocols.Ssl3, false);
-                        Log("[REDI] Reading data...");
+                        Log("[Proxy] Reading data...");
                         byte[] data = Helper.ReadContentSSL(sslStream);
-                        Log("[REDI] Received " + data.Length + " bytes of data");
+                        Log("[Proxy] Received " + data.Length + " bytes of data");
                         MemoryStream m = new MemoryStream();
                         m.Write(data, 0, data.Length);
                         data = CreateRedirectorPacket();
                         m.Write(data, 0, data.Length);
-                        Log("[REDI] Sending response");
+                        Log("[Proxy] Sending response");
                         sslStream.Write(data);
                         sslStream.Flush();
                         client.Close();
-                        Log("[REDI] Client disconnected");
+                        Log("[Proxy] Client disconnected");
                         File.WriteAllBytes("redidump.bin", m.ToArray());
                     }
                     else
                     {
                         NetworkStream stream = client.GetStream();
-                        Log("[REDI] Reading data...");
+                        Log("[Proxy] Reading data...");
                         byte[] data = Helper.ReadContentTCP(stream);
-                        Log("[REDI] Received " + data.Length + " bytes of data");
+                        Log("[Proxy] Received " + data.Length + " bytes of data");
                         MemoryStream m = new MemoryStream();
                         m.Write(data, 0, data.Length);
                         data = CreateRedirectorPacket();
                         m.Write(data, 0, data.Length);
-                        Log("[REDI] Sending response");
+                        Log("[Proxy] Sending response");
                         stream.Write(data, 0, data.Length);
                         stream.Flush();
                         client.Close();
-                        Log("[REDI] Client disconnected");
+                        Log("[Proxy] Client disconnected");
                         File.WriteAllBytes("redidump.bin", m.ToArray());
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogError("REDI", ex);
+                LogError("Proxy", ex);
             }
         }
 

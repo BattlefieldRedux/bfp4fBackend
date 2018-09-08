@@ -23,7 +23,7 @@ namespace BFP4FLauncherWV
         public static void Start()
         {
             SetExit(false);
-            Log("Starting Magma...");
+            Log("HTTP Server Online");
             new Thread(tHTTPMain).Start();
             for (int i = 0; i < 50; i++)
             {
@@ -34,7 +34,7 @@ namespace BFP4FLauncherWV
 
         public static void Stop()
         {
-            Log("Magma stopping...");
+            Log("HTTP Server Online");
             if (lMagma != null) lMagma.Stop();
             SetExit(true);
             Log("Done.");
@@ -44,40 +44,40 @@ namespace BFP4FLauncherWV
         {
             try
             {
-                Log("[MGMA] starting...");
+                Log("[Magma] starting...");
                 lMagma = new TcpListener(IPAddress.Parse(ProviderInfo.backendIP), 80);
-                Log("[MGMA] bound to  " + ProviderInfo.backendIP + ":80");
+                Log("[Magma] bound to  " + ProviderInfo.backendIP + ":80");
                 lMagma.Start();
-                Log("[MGMA] listening...");
+                Log("[Magma] listening...");
                 TcpClient client;
                 while (!GetExit())
                 {
                     client = lMagma.AcceptTcpClient();
-                    Log("[MGMA] Client connected");
+                    Log("[Magma] Client connected");
                     NetworkStream ns = client.GetStream();
                     byte[] data = Helper.ReadContentTCP(ns);
-                    Log("[MGMA] Received " + data.Length + " bytes of data");
+                    Log("[Magma] Received " + data.Length + " bytes of data");
                     if(!basicMode)
-                        Log("[MGMA] Recvdump:\n" + Encoding.ASCII.GetString(data));
+                        Log("[Magma] Recvdump:\n" + Encoding.ASCII.GetString(data));
                     try
                     {
                         ProcessMagma(Encoding.ASCII.GetString(data), ns);
                     }
                     catch { }
                     client.Close();
-                    Log("[MGMA] Client disconnected");
+                    Log("[Magma] Client disconnected");
                 }
             }
             catch (Exception ex)
             {
-                LogError("MGMA", ex);
+                LogError("Magma", ex);
             }
         }
 
         public static void ProcessMagma(string data, Stream s)
         {
             string[] lines = data.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            Log("[MGMA] Request: " + lines[0]);
+            Log("[Magma] Request: " + lines[0]);
             string cmd = lines[0].Split(' ')[0];
             string url = lines[0].Split(' ')[1].Split(':')[0];
             if (cmd == "GET")
@@ -85,18 +85,18 @@ namespace BFP4FLauncherWV
                 switch (url)
                 {
                     case "/api/nucleus/authToken":
-                        Log("[MGMA] Sending AuthToken");
+                        Log("[Magma] Sending AuthToken");
                         if (lines.Length > 5 && lines[5].StartsWith("x-server-key"))
                             ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<success><token>" + lines[5].Split(':')[1].Trim() + "</token></success>");
                         else
                             ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<success><token code=\"NEW_TOKEN\">" + lines[4].Split('=')[1] + "</token></success>");
                         return;
                     case "/api/relationships/roster/nucleus":
-                        Log("[MGMA] Sending Roster response");
+                        Log("[Magma] Sending Roster response");
                         ReplyWithXML(s, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<roster relationships=\"0\"/><success code=\"SUCCESS\"/>");
                         return;
                     case "/wv/getProfiles":
-                        Log("[MGMA] Sending Player Profiles");
+                        Log("[Magma] Sending Player Profiles");
                         StringBuilder sb = new StringBuilder();
                         Profiles.Refresh();
                         sb.Append("<profiles>\r\n");
@@ -109,7 +109,7 @@ namespace BFP4FLauncherWV
                 if (url.StartsWith("/api/nucleus/name/"))
                 {
                     int id = Convert.ToInt32(url.Substring(18));
-                    Log("[MGMA] Sending name response for PID " + id);
+                    Log("[Magma] Sending name response for PID " + id);
                     PlayerInfo p = null;
                     foreach(PlayerInfo pi in BlazeServer.allClients)
                         if (pi.userId == id)
@@ -119,7 +119,7 @@ namespace BFP4FLauncherWV
                         }
                     if (p == null)
                     {
-                        Log("[MGMA] Cant find player id!");
+                        Log("[Magma] Cant find player id!");
                         return;
                     }
                     ReplyWithXML(s, "<name>" + p.profile.name + "</name>");
@@ -127,7 +127,7 @@ namespace BFP4FLauncherWV
                 if (url.StartsWith("/api/nucleus/entitlements/"))
                 {
                     int id = Convert.ToInt32(url.Substring(26));
-                    Log("[MGMA] Sending entitlement response for PID " + id);
+                    Log("[Magma] Sending entitlement response for PID " + id);
                     PlayerInfo p = null;
                     foreach (PlayerInfo pi in BlazeServer.allClients)
                         if (pi.userId == id)
@@ -137,7 +137,7 @@ namespace BFP4FLauncherWV
                         }
                     if (p == null)
                     {
-                        Log("[MGMA] Cant find player id!");
+                        Log("[Magma] Cant find player id!");
                         return;
                     }
                     string response = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><entitlements count=\"18\">";
@@ -162,7 +162,7 @@ namespace BFP4FLauncherWV
             {
                 int pos = data.IndexOf("\r\n\r\n");
                 if (pos != -1)
-                    Log("[MGMA] Content: \n" + data.Substring(pos + 4));
+                    Log("[Magma] Content: \n" + data.Substring(pos + 4));
             }
         }
 
@@ -171,7 +171,7 @@ namespace BFP4FLauncherWV
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("HTTP/1.1 200 OK");
             sb.AppendLine("Date: " + DateTime.Now.ToUniversalTime().ToString("r"));
-            sb.AppendLine("Server: Warranty Voiders");
+            sb.AppendLine("Server: ");
             sb.AppendLine("Content-Length: " + c.Length);
             sb.AppendLine("Keep-Alive: timeout=5, max=100");
             sb.AppendLine("Connection: Keep-Alive");
@@ -179,7 +179,7 @@ namespace BFP4FLauncherWV
             sb.Append(c);
             if (!basicMode)
             {
-                Log("[MGMA] Sending: \n" + sb.ToString());
+                Log("[Magma] Sending: \n" + sb.ToString());
             }
             byte[] buf = Encoding.ASCII.GetBytes(sb.ToString());
             s.Write(buf, 0, buf.Length);

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BFP4FLauncherWV
 {
@@ -56,10 +54,28 @@ namespace BFP4FLauncherWV
                         break;
                 }
             }
-            if (p.name == null || p.id == 0)
-                return null;
+                    if (p.level < 1)
+                    {
+                        p.level = 1;
+                    }
+
+            var chars = "ABCDEFGHxyz0123456789";
+            var stringChars = new char[4];
+            var randomName = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[randomName.Next(chars.Length)];
+            }
+
+            var finalString = new String(stringChars);
+
+            if (p.name == null || p.id < 1)
+                p.name = "generated" + randomName;
+                p.id = p.id + 99; // lol
             return p;
         }
+            
 
         public override string ToString()
         {

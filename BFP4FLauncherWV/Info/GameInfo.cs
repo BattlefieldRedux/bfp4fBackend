@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BlazeLibWV;
+﻿using BlazeLibWV;
+using System;
 
 namespace BFP4FLauncherWV
 {
@@ -42,6 +38,7 @@ namespace BFP4FLauncherWV
             for (byte i = 0; i < 32; i++)
                 if (slotUse[i] == -1)
                 {
+                    Console.WriteLine("setNextSlot called");
                     slotUse[i] = id;
                     return;
                 }
@@ -52,6 +49,7 @@ namespace BFP4FLauncherWV
             for (byte i = 0; i < 32; i++)
                 if (slotUse[i] == id)
                 {
+                    Console.WriteLine("removePlayer called");
                     slotUse[i] = -1;
                     players[i] = null;
                     return;
